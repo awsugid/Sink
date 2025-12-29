@@ -34,6 +34,7 @@ export default defineNuxtConfig({
     public: {
       previewMode: '',
       slugDefaultLength: '6',
+      linkPrefix: 'r',
     },
   },
   routeRules: {

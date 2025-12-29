@@ -3,9 +3,14 @@ import type { z } from 'zod'
 import { parsePath, withQuery } from 'ufo'
 
 export default eventHandler(async (event) => {
-  const { pathname: slug } = parsePath(event.path.replace(/^\/|\/$/g, '')) // remove leading and trailing slashes
   const { slugRegex, reserveSlug } = useAppConfig(event)
   const { homeURL, linkCacheTtl, redirectWithQuery, caseSensitive } = useRuntimeConfig(event)
+  const linkPrefix = import.meta.env.NUXT_PUBLIC_LINK_PREFIX || 'r'
+  let { pathname: slug } = parsePath(event.path.replace(/^\/|\/$/g, '')) // remove leading and trailing slashes
+
+  if (linkPrefix && slug.startsWith(`${linkPrefix}/`)) {
+    slug = slug.slice(linkPrefix.length + 1)
+  }
   const { cloudflare } = event.context
 
   if (event.path === '/' && homeURL)
