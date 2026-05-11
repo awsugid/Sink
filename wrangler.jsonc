@@ -1,17 +1,27 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sink",
-  "main": "dist/server/index.mjs",
+  "main": ".output/server/index.mjs",
   "assets": {
     "binding": "ASSETS",
-    "directory": "dist/public",
+    "directory": ".output/public",
+    "html_handling": "drop-trailing-slash"
   },
   "compatibility_date": "2025-05-08",
   "compatibility_flags": ["nodejs_compat"],
   "keep_vars": true,
   "upload_source_maps": true,
+  "observability": {
+    "logs": {
+      "enabled": true
+    },
+    "traces": {
+      "enabled": true
+    }
+  },
   "ai": {
     "binding": "AI",
+    "remote": true
   },
   "analytics_engine_datasets": [
     {
@@ -22,7 +32,18 @@
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "47d9bb649c034851a1bf831326d75e08", // IMPORTANT: Change this to your KV namespace ID
-    },
+      "preview_id": "47d9bb649c034851a1bf831326d75e08",
+      "id": "47d9bb649c034851a1bf831326d75e08" // IMPORTANT: Change this to your KV namespace ID
+    }
   ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "preview_bucket_name": "sink",
+      "bucket_name": "sink" // IMPORTANT: Change this to your R2 bucket name, or create one with `wrangler r2 bucket create sink`
+    }
+  ],
+  "triggers": {
+    "crons": ["0 0 * * *"] // Run backup task daily at 00:00 UTC
+  }
 }
